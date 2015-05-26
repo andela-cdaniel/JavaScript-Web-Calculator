@@ -1,0 +1,60 @@
+body {
+	font-family: 'Calibri', sans-serif;
+	width: 30%;
+	margin: 0 auto;
+	padding: 35px 15px;
+	background-color: aliceblue;
+}
+.calculator {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	width: 100%;
+	padding: 25px;
+	background-color: /*#fff;*/ #7fc6a4;
+	box-shadow: 0 0 5px 1px #ccc;
+	border-bottom: 4px solid #ccc;
+}
+.calc-display {
+	padding: 10px;
+	border: 1px solid #ccc;
+	font-size: 18px;
+	margin-bottom: 10px;
+	outline: 0;
+	text-align: right;
+	width: 93%;
+	background-color: #f1bf98;
+	color: #fff;
+}
+.calculator button {
+	border: 1px solid #ccc;
+	box-shadow: 0 0 1px 1px aliceblue;
+	color: #777;
+	padding: 10px;
+	margin: 5px 10px 15px 0;
+	outline: 0;
+	cursor: pointer;
+	transition-duration: .4s;
+}
+.calculator button:hover {
+	border-color: aliceblue;
+}
+.calculator button:active {
+	transform: translateY(2px);
+}
+.buttons .convenience-keys, .buttons .keys {
+	display: flex;
+}
+.buttons .convenience-keys button:first-of-type,
+.buttons .convenience-keys button:nth-child(2),
+.buttons .keys button:nth-of-type(1n + 4) {
+	flex-grow: 1;
+}
+.buttons .convenience-keys button,
+.buttons .keys button:nth-child(1n + 4),
+.buttons .row-4 button:nth-child(2),
+.buttons .row-4 button:nth-child(3) {
+	border: 0;
+	background-color: #7fc6a4;
+	color: #fff;
+}
