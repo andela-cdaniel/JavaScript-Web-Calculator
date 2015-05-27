@@ -5,6 +5,9 @@
 			calc: function (fn) {
 				return new Function('return ' + fn)();
 			},
+			oneOverNum: function (val) {
+				return 1 / val;
+			},
 			isAcceptedSym: function (val) {
 				var symbols = ['+', '-', '*', '/', '.'],
 					isSym = false;
@@ -100,6 +103,9 @@
 						case '+':
 							calculator.model.handleOperation(e.target.dataset.value);
 							break;
+						case '.':
+							calculator.model.handleOperation(e.target.dataset.value);
+							break;
 						case 'sqrt':
 							try {
 								// If value ends with a symbol, ignore the symbol and calculate value as is
@@ -114,9 +120,26 @@
 								disp.value = 'Error, not a valid expression';
 							}
 							break;
+						case '1/n':
+							try {
+								// If value ends with a symbol, ignore the symbol and calculate value as is
+								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
+									disp.value = disp.value.substring(0, disp.value.length - 1);
+									disp.value = calculator.model.calc(calculator.model.oneOverNum(disp.value));
+								} else {
+									disp.value = calculator.model.calc(calculator.model.oneOverNum(disp.value));
+								}
+							} catch (ex) {
+								// When all else fails just throw an error like a cry baby
+								disp.value = 'Error, not a valid expression';
+							}
+							break;
 						case '=':
 							try {
 								// If value ends with a symbol, ignore the symbol and calculate value as is
+								if (! (disp.value.length > 0) ) {
+									disp.value = '0';
+								}
 								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
 									disp.value = disp.value.substring(0, disp.value.length - 1);
 									disp.value = calculator.model.calc(disp.value);
