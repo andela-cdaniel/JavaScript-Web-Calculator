@@ -6,7 +6,7 @@
 				return new Function('return ' + fn)();
 			},
 			isAcceptedSym: function (val) {
-				var symbols = ['+', '-', '*', '/'],
+				var symbols = ['+', '-', '*', '/', '.'],
 					isSym = false;
 				if (symbols.indexOf(val) !== -1) {
 					isSym = true;
@@ -49,7 +49,7 @@
 
 		controller: {
 			updateScreen: function () {
-				var emptyStr = '', disp = calculator.view.screen, tempArr;
+				var emptyStr = '', disp = calculator.view.screen;
 				calculator.view.keys.addEventListener('click', function (e) {
 					switch(e.target.dataset.value) {
 						case '0':
@@ -100,10 +100,31 @@
 						case '+':
 							calculator.model.handleOperation(e.target.dataset.value);
 							break;
+						case 'sqrt':
+							try {
+								// If value ends with a symbol, ignore the symbol and calculate value as is
+								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
+									disp.value = disp.value.substring(0, disp.value.length - 1);
+									disp.value = calculator.model.calc(Math.sqrt(disp.value));
+								} else {
+									disp.value = calculator.model.calc(Math.sqrt(disp.value));
+								}
+							} catch (ex) {
+								// When all else fails just throw an error like a cry baby
+								disp.value = 'Error, not a valid expression';
+							}
+							break;
 						case '=':
 							try {
-								disp.value = calculator.model.calc(disp.value);
+								// If value ends with a symbol, ignore the symbol and calculate value as is
+								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
+									disp.value = disp.value.substring(0, disp.value.length - 1);
+									disp.value = calculator.model.calc(disp.value);
+								} else {
+									disp.value = calculator.model.calc(disp.value);
+								}
 							} catch (ex) {
+								// When all else fails just throw an error like a cry baby
 								disp.value = 'Error, not a valid expression';
 							}
 							break;
