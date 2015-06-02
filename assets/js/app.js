@@ -52,7 +52,7 @@
 
 		controller: {
 			updateScreen: function () {
-				var emptyStr = '', disp = calculator.view.screen;
+				var emptyStr = '', disp = calculator.view.screen, negCount = 0, tempArr;
 				calculator.view.keys.addEventListener('click', function (e) {
 					switch(e.target.dataset.value) {
 						case '0':
@@ -86,9 +86,12 @@
 							disp.value += (emptyStr + e.target.dataset.value);
 							break;
 						case 'clr-one':
+							negCount = 0;
 							disp.value = disp.value.substr(0, disp.value.length - 1);
+							disp.value = disp.value.replace(/\W+/gi, '');
 							break;
 						case 'clr-all':
+							negCount = 0;
 							disp.value = '';
 							break;
 						case '/':
@@ -106,7 +109,25 @@
 						case '.':
 							calculator.model.handleOperation(e.target.dataset.value);
 							break;
+						case 'neg':
+							// Should negate expressions and single values only
+
+							if (disp.value.length > 0) {
+								if ( !(calculator.model.isAcceptedSym(disp.value[disp.value.length -1])) ) {
+								negCount += 1;
+
+									if (negCount === 1) {
+										tempArr = disp.value.split('');
+										tempArr.splice(0, 0, '-(');
+										tempArr.push(')');
+										disp.value = tempArr.join('');
+									}
+								}
+							}
+
+							break;
 						case 'sqrt':
+							negCount = 0;
 							try {
 								// If value ends with a symbol, ignore the symbol and calculate value as is
 								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
@@ -120,7 +141,23 @@
 								disp.value = 'Error, not a valid expression';
 							}
 							break;
+						case 'sine':
+							negCount = 0;
+							try {
+								// If value ends with a symbol, ignore the symbol and calculate value as is
+								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
+									disp.value = disp.value.substring(0, disp.value.length - 1);
+									disp.value = calculator.model.calc(Math.sin(disp.value));
+								} else {
+									disp.value = calculator.model.calc(Math.sin(disp.value));
+								}
+							} catch (ex) {
+								// When all else fails just throw an error like a cry baby
+								disp.value = 'Error, not a valid expression';
+							}
+							break;
 						case '1/n':
+							negCount = 0;
 							try {
 								// If value ends with a symbol, ignore the symbol and calculate value as is
 								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
@@ -135,11 +172,12 @@
 							}
 							break;
 						case '=':
+							negCount = 0;
 							try {
-								// If value ends with a symbol, ignore the symbol and calculate value as is
-								if (! (disp.value.length > 0) ) {
+								if ( !(disp.value.length > 0) ) {
 									disp.value = '0';
 								}
+								// If value ends with a symbol, ignore the symbol and calculate value as is
 								if (calculator.model.isAcceptedSym(disp.value[disp.value.length - 1])) {
 									disp.value = disp.value.substring(0, disp.value.length - 1);
 									disp.value = calculator.model.calc(disp.value);
